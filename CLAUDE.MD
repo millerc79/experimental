@@ -1,7 +1,7 @@
 # Experimental - Learning & Practice Space
 
 ## Project Overview
-This is a beginner-friendly learning environment for exploring programming, experimenting with code, and building skills. The owner is new to coding and learning the fundamentals.
+This is Chad's beginner-friendly learning environment for exploring programming, experimenting with code, and building skills. Chad is new to coding and learning the fundamentals, with a particular interest in automation.
 
 ## Communication Style
 - **Explain clearly**: Use simple language and avoid jargon when possible
