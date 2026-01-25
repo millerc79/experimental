@@ -1,0 +1,4 @@
+# Requirements for PDF Automation Tool
+# Install with: pip install -r requirements.txt
+
+PyPDF2>=3.0.0

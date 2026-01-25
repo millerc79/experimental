@@ -1,8 +1,20 @@
-# My First Python Automation Project
+# Python Automation Projects
 
-Welcome! This is your first working Python automation script. 🎉
+Welcome! This repository contains automation tools to help you organize files and learn Python. 🎉
 
-## What Does It Do?
+## Projects
+
+### 1. File Organizer (`file_organizer.py`)
+A simple script that organizes messy folders by sorting files into categories.
+
+### 2. PDF Automation Tool (`pdf_automation.py`) - NEW!
+A smart alternative to Hazel that automatically processes, renames, and organizes PDF files by reading their content. **No need to update rules every year!**
+
+📖 See [PDF_AUTOMATION_README.md](PDF_AUTOMATION_README.md) for full documentation.
+
+---
+
+## File Organizer
 
 The `file_organizer.py` script automatically organizes messy folders by sorting files into categories:
 
@@ -69,6 +81,35 @@ Once you're comfortable with this script, you can:
 - Organize your real Downloads folder
 - Modify it to do more complex automation
 - Use it as a template for other automation tasks
+
+---
+
+## PDF Automation Tool (Advanced)
+
+A more sophisticated automation tool that:
+- Reads PDF content to find keywords
+- Automatically extracts dates and years from PDFs
+- Renames files with smart patterns
+- Moves files to organized folders
+- Works forever without needing yearly rule updates
+
+**Key advantage**: Unlike tools like Hazel where you need separate rules for each year (2019, 2020, 2021...), this tool automatically detects years from PDF content!
+
+### Quick Start
+1. Install requirements: `pip install -r requirements.txt`
+2. Run: `python3 pdf_automation.py`
+3. Try dry run mode first to preview changes
+
+### Example Use Case
+You have App Store receipts coming into your Downloads folder. The tool will:
+1. Detect they contain "receipt" and "icloud"
+2. Extract the date from the PDF (like "January 15, 2025")
+3. Rename to: `App Store_2025-01-15_2025.pdf`
+4. Move to: `Downloads/Receipts/`
+
+**And it works for 2026, 2027, 2028... automatically!**
+
+📖 **Full documentation**: [PDF_AUTOMATION_README.md](PDF_AUTOMATION_README.md)
 
 ---
 
