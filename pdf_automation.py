@@ -330,6 +330,23 @@ class PDFAutomation:
         """
         print(f"\n📄 Processing: {Path(pdf_path).name}")
 
+        # Security: Skip symlinks to prevent symlink attacks
+        if Path(pdf_path).is_symlink():
+            print("   ⚠️  Skipping symlink (security measure)")
+            return False
+
+        # Security: Check file size (skip files over 100MB)
+        try:
+            file_size = os.path.getsize(pdf_path)
+            max_size = 100 * 1024 * 1024  # 100 MB
+            if file_size > max_size:
+                size_mb = file_size / (1024 * 1024)
+                print(f"   ⚠️  File too large ({size_mb:.1f} MB), skipping for safety")
+                return False
+        except OSError:
+            print("   ⚠️  Could not check file size, skipping")
+            return False
+
         # Extract text from PDF
         pdf_text = self.extract_text_from_pdf(pdf_path)
         if not pdf_text:
@@ -366,6 +383,8 @@ class PDFAutomation:
                     move_to_path = move_to_path.replace("{date}", date)
 
                     # Support absolute paths (starting with /) or relative paths
+                    # NOTE: For personal use, we trust the rules file since the user controls it.
+                    # For shared/production use, add path validation to prevent traversal attacks.
                     if move_to_path.startswith("/") or move_to_path.startswith("~"):
                         # Absolute path - use as-is
                         dest_folder = Path(move_to_path).expanduser()
