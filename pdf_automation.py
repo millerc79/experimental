@@ -16,6 +16,8 @@ import os
 import re
 import json
 import shutil
+import argparse
+import time
 from datetime import datetime
 from pathlib import Path
 from typing import List, Dict, Optional, Tuple
@@ -352,30 +354,159 @@ class PDFAutomation:
         print("=" * 70)
 
 
+    def watch_folder(self, folder_path: str, interval: int = 30, dry_run: bool = False):
+        """
+        Continuously watch a folder for new PDFs and process them
+
+        Args:
+            folder_path: Path to folder to watch
+            interval: How often to check for new files (in seconds)
+            dry_run: If True, show what would happen without actually moving files
+        """
+        folder = Path(folder_path)
+
+        if not folder.exists():
+            print(f"❌ Folder not found: {folder_path}")
+            return
+
+        print("=" * 70)
+        print("PDF AUTOMATION TOOL - WATCH MODE")
+        print("=" * 70)
+        print(f"👀 Watching folder: {folder_path}")
+        print(f"📋 Loaded {len(self.rules)} rules")
+        print(f"⏱️  Check interval: {interval} seconds")
+
+        if dry_run:
+            print("🔍 DRY RUN MODE - No files will be moved")
+
+        print("\n💡 Press Ctrl+C to stop watching\n")
+        print("=" * 70)
+
+        # Track which files we've already processed
+        processed_files = set()
+
+        try:
+            while True:
+                # Find all PDF files
+                pdf_files = list(folder.glob("*.pdf"))
+
+                # Filter out already processed files
+                new_files = [f for f in pdf_files if f not in processed_files]
+
+                if new_files:
+                    print(f"\n📥 Found {len(new_files)} new PDF(s)")
+
+                    for pdf_file in new_files:
+                        if self.process_pdf(str(pdf_file), folder_path, dry_run):
+                            processed_files.add(pdf_file)
+                        else:
+                            # Still mark as processed to avoid checking again
+                            processed_files.add(pdf_file)
+
+                    print(f"\n⏳ Watching for new files... (next check in {interval}s)")
+                else:
+                    print(f".", end="", flush=True)
+
+                time.sleep(interval)
+
+        except KeyboardInterrupt:
+            print("\n\n👋 Stopped watching. Goodbye!")
+
+
 def main():
     """Main function to run the PDF automation tool"""
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(
+        description="PDF Automation Tool - Smart Alternative to Hazel",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Interactive mode (asks for folder and settings)
+  python3 pdf_automation.py
+
+  # Process a specific folder
+  python3 pdf_automation.py --folder ~/Downloads
+
+  # Dry run (preview without moving files)
+  python3 pdf_automation.py --folder ~/Downloads --dry-run
+
+  # Watch mode (continuously monitor for new PDFs)
+  python3 pdf_automation.py --folder ~/Downloads --watch
+
+  # Watch mode with custom interval
+  python3 pdf_automation.py --folder ~/Downloads --watch --interval 60
+        """
+    )
+
+    parser.add_argument(
+        '--folder', '-f',
+        type=str,
+        default=None,
+        help='Folder to process (default: interactive prompt)'
+    )
+
+    parser.add_argument(
+        '--dry-run', '-d',
+        action='store_true',
+        help='Preview changes without actually moving files'
+    )
+
+    parser.add_argument(
+        '--watch', '-w',
+        action='store_true',
+        help='Continuously watch folder for new PDFs'
+    )
+
+    parser.add_argument(
+        '--interval', '-i',
+        type=int,
+        default=30,
+        help='Watch mode check interval in seconds (default: 30)'
+    )
+
+    parser.add_argument(
+        '--rules', '-r',
+        type=str,
+        default='pdf_rules.json',
+        help='Path to rules file (default: pdf_rules.json)'
+    )
+
+    args = parser.parse_args()
+
     print("\n🚀 PDF Automation Tool - Smart Alternative to Hazel\n")
 
     # Initialize the automation tool
-    automation = PDFAutomation()
+    automation = PDFAutomation(rules_file=args.rules)
 
-    # Ask user for folder to process
-    folder = input("Enter folder path to process (or press Enter for current directory): ").strip()
+    # Determine folder to process
+    if args.folder:
+        folder = args.folder
+    else:
+        # Interactive mode
+        folder = input("Enter folder path to process (or press Enter for current directory): ").strip()
+        if not folder:
+            folder = "."
 
-    if not folder:
-        folder = "."
+        # Ask if this is a dry run (only in interactive mode)
+        if not args.dry_run:
+            dry_run_input = input("\nDo you want to do a dry run first? (y/n): ").strip().lower()
+            args.dry_run = dry_run_input == 'y'
 
-    # Ask if this is a dry run
-    dry_run_input = input("\nDo you want to do a dry run first? (y/n): ").strip().lower()
-    dry_run = dry_run_input == 'y'
+        # Ask about watch mode (only in interactive mode)
+        if not args.watch:
+            watch_input = input("\nDo you want to run in watch mode? (y/n): ").strip().lower()
+            args.watch = watch_input == 'y'
 
-    print()
+        print()
 
-    # Process the folder
-    automation.process_folder(folder, dry_run)
+    # Run in watch mode or one-time mode
+    if args.watch:
+        automation.watch_folder(folder, interval=args.interval, dry_run=args.dry_run)
+    else:
+        automation.process_folder(folder, dry_run=args.dry_run)
 
-    if dry_run:
-        print("\n💡 This was a dry run. Run again without dry run mode to actually move files.")
+        if args.dry_run:
+            print("\n💡 This was a dry run. Run again without --dry-run to actually move files.")
 
 
 if __name__ == "__main__":
