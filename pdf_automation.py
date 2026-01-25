@@ -18,6 +18,7 @@ import json
 import shutil
 import argparse
 import time
+import unicodedata
 from datetime import datetime
 from pathlib import Path
 from typing import List, Dict, Optional, Tuple
@@ -29,6 +30,83 @@ try:
 except ImportError:
     print("⚠️  PyPDF2 not installed. Run: pip install PyPDF2")
     exit(1)
+
+
+def sanitize_filename(filename: str, max_length: int = 255) -> str:
+    """
+    Sanitize a filename to be safe for filesystems
+
+    Args:
+        filename: The filename to sanitize
+        max_length: Maximum filename length (default: 255 for macOS)
+
+    Returns:
+        Sanitized filename safe for macOS and Windows
+    """
+    # Preserve the extension
+    if '.' in filename:
+        name, ext = filename.rsplit('.', 1)
+        has_ext = True
+    else:
+        name = filename
+        ext = ''
+        has_ext = False
+
+    # Remove or replace invalid characters
+    # macOS disallows: / and :
+    # Windows disallows: / \ : * ? " < > |
+    # We'll be strict and remove all of these
+    invalid_chars = ['/', '\\', ':', '*', '?', '"', '<', '>', '|']
+    for char in invalid_chars:
+        name = name.replace(char, '_')
+
+    # Replace multiple underscores with single underscore
+    name = re.sub(r'_+', '_', name)
+
+    # Remove leading/trailing spaces and dots
+    name = name.strip(' .')
+
+    # Remove control characters and other invalid Unicode
+    name = ''.join(char for char in name if unicodedata.category(char)[0] != 'C')
+
+    # Handle reserved names on Windows
+    # CON, PRN, AUX, NUL, COM1-9, LPT1-9
+    reserved_names = [
+        'CON', 'PRN', 'AUX', 'NUL',
+        'COM1', 'COM2', 'COM3', 'COM4', 'COM5', 'COM6', 'COM7', 'COM8', 'COM9',
+        'LPT1', 'LPT2', 'LPT3', 'LPT4', 'LPT5', 'LPT6', 'LPT7', 'LPT8', 'LPT9'
+    ]
+    if name.upper() in reserved_names:
+        name = f"_{name}"  # Prefix with underscore
+
+    # If name is empty after sanitization, use a default
+    if not name:
+        name = "unnamed"
+
+    # Reconstruct filename with extension
+    if has_ext:
+        sanitized = f"{name}.{ext}"
+    else:
+        sanitized = name
+
+    # Enforce length limit (accounting for extension)
+    if len(sanitized.encode('utf-8')) > max_length:
+        # Calculate how much to truncate
+        ext_length = len(f".{ext}".encode('utf-8')) if has_ext else 0
+        available_length = max_length - ext_length - 10  # Leave some buffer
+
+        # Truncate the name
+        name_bytes = name.encode('utf-8')[:available_length]
+        # Decode, ignoring errors from partial characters
+        name = name_bytes.decode('utf-8', errors='ignore')
+
+        # Reconstruct
+        if has_ext:
+            sanitized = f"{name}.{ext}"
+        else:
+            sanitized = name
+
+    return sanitized
 
 
 class PDFAutomation:
@@ -232,6 +310,9 @@ class PDFAutomation:
         new_name = new_name.replace("{ext}", file_path.suffix)
         new_name = new_name.replace("{date_created}", file_created.strftime("%Y-%m-%d"))
         new_name = new_name.replace("{original_name}", file_path.stem)
+
+        # Sanitize the filename to ensure it's safe for the filesystem
+        new_name = sanitize_filename(new_name)
 
         return new_name
 
