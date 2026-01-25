@@ -298,7 +298,15 @@ class PDFAutomation:
                         print(f"   🔄 Would move to: {dest_path}")
                     else:
                         # Create destination folder if it doesn't exist
-                        dest_folder.mkdir(parents=True, exist_ok=True)
+                        try:
+                            dest_folder.mkdir(parents=True, exist_ok=True)
+                        except PermissionError:
+                            print(f"   ❌ Permission denied: Cannot create folder {dest_folder}")
+                            print(f"   💡 Check that you have write access to the destination")
+                            return False
+                        except Exception as e:
+                            print(f"   ❌ Could not create destination folder: {e}")
+                            return False
 
                         # Check if file already exists
                         if dest_path.exists():
@@ -316,8 +324,20 @@ class PDFAutomation:
                             print(f"   📝 Using unique name: {dest_path.name}")
 
                         # Move the file
-                        shutil.move(pdf_path, dest_path)
-                        print(f"   ✅ Moved to: {dest_path}")
+                        try:
+                            shutil.move(pdf_path, dest_path)
+                            print(f"   ✅ Moved to: {dest_path}")
+                        except PermissionError as e:
+                            print(f"   ❌ Permission denied: {e}")
+                            print(f"   💡 Check that you have write access to: {dest_folder}")
+                            return False
+                        except OSError as e:
+                            print(f"   ❌ Could not move file: {e}")
+                            print(f"   💡 File might be open in another app or disk might be full")
+                            return False
+                        except Exception as e:
+                            print(f"   ❌ Unexpected error: {e}")
+                            return False
 
                 return True
 
