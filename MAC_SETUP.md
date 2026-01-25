@@ -4,12 +4,24 @@ This guide helps you set up automated PDF processing for your iCloud "Incoming S
 
 ## Your Setup
 
-**Watched Folder**: `/Users/chadmiller/Library/Mobile Documents/com~apple~CloudDocs/Incoming Scans`
+**Watched Folder (Source)**:
+```
+/Users/chadmiller/Library/Mobile Documents/com~apple~CloudDocs/Incoming Scans
+```
 
-This folder will be monitored for new PDFs, which will be:
-- Read for content (receipts, invoices, statements, etc.)
-- Renamed with dates automatically extracted from the PDF
-- Moved to organized subfolders
+**Filing Cabinet (Destination)**:
+```
+/Users/chadmiller/Documents/Filing Cabinet
+```
+
+This setup will:
+- Monitor your "Incoming Scans" folder for new PDFs
+- Read PDF content to identify document types
+- Extract dates and years from PDF content (not filename!)
+- Rename with standardized patterns
+- Organize into Filing Cabinet by **year** and **category**
+
+📖 **See [FILING_CABINET_STRUCTURE.md](FILING_CABINET_STRUCTURE.md) for complete folder organization details**
 
 ## Quick Start (On Your Mac)
 
@@ -70,7 +82,9 @@ This will:
 
 ## Customizing Rules
 
-Edit `pdf_rules.json` to customize what happens to your PDFs.
+Edit `pdf_rules_filing_cabinet.json` to customize what happens to your PDFs.
+
+This file is specifically configured for your Filing Cabinet setup with year-based organization.
 
 **Default rules included:**
 - App Store receipts → `Receipts/` folder
@@ -79,24 +93,26 @@ Edit `pdf_rules.json` to customize what happens to your PDFs.
 - Tax documents → `Taxes/` folder
 - Utility bills → `Bills/Utilities/` folder
 
-### Example: Add a Rule for Medical Bills
+### Example: Add a Rule for Subscription Receipts
 
-Edit `pdf_rules.json` and add:
+Edit `pdf_rules_filing_cabinet.json` and add:
 
 ```json
 {
-  "name": "Medical Bills",
-  "description": "Organizes medical and insurance bills",
+  "name": "Subscription Receipts",
+  "description": "Organizes monthly subscription payments",
   "conditions": {
     "extension": "pdf",
-    "content_contains": ["patient", "medical"]
+    "content_contains": ["subscription", "recurring"]
   },
   "actions": {
-    "rename_pattern": "Medical_{date}_{year}{ext}",
-    "move_to": "Medical/Bills"
+    "rename_pattern": "Subscription_{date}{ext}",
+    "move_to": "/Users/chadmiller/Documents/Filing Cabinet/{year}/Subscriptions"
   }
 }
 ```
+
+**Note the `{year}` placeholder** - it gets replaced with the actual year from the PDF!
 
 Then test:
 ```bash
@@ -184,22 +200,40 @@ tail -f ~/pdf_automation.log
 
 ## Folder Structure
 
-After processing, your Incoming Scans folder will have organized subfolders:
+After processing, PDFs are moved from "Incoming Scans" to your "Filing Cabinet" organized by year:
 
 ```
-/Users/chadmiller/Library/Mobile Documents/com~apple~CloudDocs/Incoming Scans/
-├── Receipts/
-│   ├── App Store_2025-01-15_2025.pdf
-│   └── App Store_2025-01-20_2025.pdf
-├── Banking/
-│   └── Statements/
-│       └── Bank_Statement_2025-01-01.pdf
-├── Invoices/
-│   └── Invoice_2025-01-10_2025.pdf
-└── Bills/
-    └── Utilities/
-        └── Utility_Bill_2025-01-05.pdf
+/Users/chadmiller/Documents/Filing Cabinet/
+├── 2024/
+│   ├── Receipts/
+│   ├── Banking/
+│   │   ├── Statements/
+│   │   └── Credit Cards/
+│   ├── Invoices/
+│   ├── Taxes/
+│   ├── Bills/
+│   │   └── Utilities/
+│   ├── Medical/
+│   └── Insurance/
+└── 2025/
+    ├── Receipts/
+    │   ├── App Store_2025-01-15_2025.pdf
+    │   └── App Store_2025-01-20_2025.pdf
+    ├── Banking/
+    │   ├── Statements/
+    │   │   └── Bank_Statement_2025-01-01.pdf
+    │   └── Credit Cards/
+    ├── Invoices/
+    │   └── Invoice_2025-01-10_2025.pdf
+    ├── Taxes/
+    ├── Bills/
+    │   └── Utilities/
+    │       └── Utility_Bill_2025-01-05.pdf
+    ├── Medical/
+    └── Insurance/
 ```
+
+**Key feature:** Year is detected from PDF content, not the filename or scan date!
 
 ## Troubleshooting
 

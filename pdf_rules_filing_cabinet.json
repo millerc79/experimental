@@ -1,0 +1,98 @@
+[
+  {
+    "name": "App Store Receipts",
+    "description": "Organizes App Store/iCloud receipts by year",
+    "conditions": {
+      "extension": "pdf",
+      "content_contains": ["receipt", "icloud"]
+    },
+    "actions": {
+      "rename_pattern": "App Store_{date}_{year}{ext}",
+      "move_to": "/Users/chadmiller/Documents/Filing Cabinet/{year}/Receipts"
+    }
+  },
+  {
+    "name": "Bank Statements",
+    "description": "Organizes bank statements by year",
+    "conditions": {
+      "extension": "pdf",
+      "content_contains": ["statement", "account", "balance"]
+    },
+    "actions": {
+      "rename_pattern": "Bank_Statement_{date}{ext}",
+      "move_to": "/Users/chadmiller/Documents/Filing Cabinet/{year}/Banking/Statements"
+    }
+  },
+  {
+    "name": "Invoices",
+    "description": "Organizes invoices by year",
+    "conditions": {
+      "extension": "pdf",
+      "content_contains": ["invoice"]
+    },
+    "actions": {
+      "rename_pattern": "Invoice_{date}_{year}{ext}",
+      "move_to": "/Users/chadmiller/Documents/Filing Cabinet/{year}/Invoices"
+    }
+  },
+  {
+    "name": "Tax Documents",
+    "description": "Organizes tax-related PDFs by year",
+    "conditions": {
+      "extension": "pdf",
+      "content_contains": ["tax", "irs", "1099", "w-2"]
+    },
+    "actions": {
+      "rename_pattern": "Tax_{year}_{date}{ext}",
+      "move_to": "/Users/chadmiller/Documents/Filing Cabinet/{year}/Taxes"
+    }
+  },
+  {
+    "name": "Utility Bills",
+    "description": "Organizes utility bills by year",
+    "conditions": {
+      "extension": "pdf",
+      "content_contains": ["bill", "utility", "electric", "water", "gas", "internet"]
+    },
+    "actions": {
+      "rename_pattern": "Utility_Bill_{date}{ext}",
+      "move_to": "/Users/chadmiller/Documents/Filing Cabinet/{year}/Bills/Utilities"
+    }
+  },
+  {
+    "name": "Medical Documents",
+    "description": "Organizes medical bills and insurance EOBs by year",
+    "conditions": {
+      "extension": "pdf",
+      "content_contains": ["patient", "medical", "eob", "explanation of benefits"]
+    },
+    "actions": {
+      "rename_pattern": "Medical_{date}{ext}",
+      "move_to": "/Users/chadmiller/Documents/Filing Cabinet/{year}/Medical"
+    }
+  },
+  {
+    "name": "Insurance Documents",
+    "description": "Organizes insurance documents by year",
+    "conditions": {
+      "extension": "pdf",
+      "content_contains": ["insurance", "policy"]
+    },
+    "actions": {
+      "rename_pattern": "Insurance_{date}{ext}",
+      "move_to": "/Users/chadmiller/Documents/Filing Cabinet/{year}/Insurance"
+    }
+  },
+  {
+    "name": "Credit Card Statements",
+    "description": "Organizes credit card statements by year",
+    "conditions": {
+      "extension": "pdf",
+      "content_contains": ["credit card", "visa", "mastercard", "amex"]
+    },
+    "actions": {
+      "rename_pattern": "CC_Statement_{date}{ext}",
+      "move_to": "/Users/chadmiller/Documents/Filing Cabinet/{year}/Banking/Credit Cards"
+    }
+  }
+]

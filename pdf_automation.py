@@ -279,7 +279,19 @@ class PDFAutomation:
 
                 # Apply moving
                 if "move_to" in actions:
-                    dest_folder = Path(source_folder) / actions["move_to"]
+                    # Support {year} placeholder in move_to path
+                    move_to_path = actions["move_to"]
+                    move_to_path = move_to_path.replace("{year}", str(year))
+                    move_to_path = move_to_path.replace("{date}", date)
+
+                    # Support absolute paths (starting with /) or relative paths
+                    if move_to_path.startswith("/") or move_to_path.startswith("~"):
+                        # Absolute path - use as-is
+                        dest_folder = Path(move_to_path).expanduser()
+                    else:
+                        # Relative path - relative to source folder
+                        dest_folder = Path(source_folder) / move_to_path
+
                     dest_path = dest_folder / new_filename
 
                     if dry_run:
