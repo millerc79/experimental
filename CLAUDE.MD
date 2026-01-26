@@ -78,6 +78,183 @@ Apply these standards to ALL code created in this repository:
 - Never follow untrusted symlinks
 - Set reasonable file size limits
 
+### Repository Privacy & Sensitive Information (CRITICAL)
+
+**NEVER commit sensitive or personal information to git repositories.**
+
+#### What is Sensitive Information?
+
+**Always protect:**
+- API keys, tokens, passwords, credentials
+- Database connection strings with passwords
+- Private keys, certificates, SSH keys
+- Personal paths with usernames (e.g., `/Users/chadmiller/`)
+- Email addresses, phone numbers
+- Personal configuration files with custom paths
+- Sample data with real information
+- `.env` files with secrets
+
+**Generally safe to commit:**
+- Generic code without personal info
+- Example configurations with placeholders (e.g., `YOUR_USERNAME`)
+- Documentation with generic examples
+- Template files for others to customize
+
+#### How to Protect Sensitive Information
+
+**1. Use .gitignore (Always)**
+
+Before first commit, create `.gitignore` with:
+```
+# Personal configuration files
+config_personal.json
+*_personal.*
+.env
+.env.local
+
+# Files with custom paths
+run_script.sh  # If it contains personal paths
+
+# Secrets and credentials
+*.pem
+*.key
+secrets/
+credentials.json
+
+# Output that might contain sensitive data
+*.log
+*.pdf
+output/
+```
+
+**2. Create Template Files**
+
+Instead of committing personal files, create generic templates:
+
+❌ **DON'T commit:**
+```bash
+# run_script.sh (with personal paths)
+USER_PATH="/Users/chadmiller/Documents"
+API_KEY="sk_live_abc123"
+```
+
+✅ **DO commit a template:**
+```bash
+# run_script_template.sh (generic)
+USER_PATH="/Users/YOUR_USERNAME/Documents"
+API_KEY="your_api_key_here"
+# Instructions: Copy this to run_script.sh and customize
+```
+
+**3. Use Environment Variables for Secrets**
+
+❌ **DON'T hardcode:**
+```python
+api_key = "sk_live_abc123"
+```
+
+✅ **DO use environment variables:**
+```python
+import os
+api_key = os.getenv('API_KEY')
+if not api_key:
+    raise ValueError("API_KEY not set. See setup instructions.")
+```
+
+**4. Document Setup Without Exposing Secrets**
+
+In README.md, provide instructions:
+```markdown
+## Setup
+
+1. Copy the template: `cp config_template.json config.json`
+2. Edit `config.json` with your API key
+3. The file is gitignored and won't be committed
+```
+
+#### Before Making a Repository Public
+
+**Checklist:**
+
+1. **Audit all files:**
+   ```bash
+   # Check what's tracked in git
+   git ls-files
+
+   # Search for potential secrets
+   git grep -i "password\|api_key\|secret"
+   git grep -E "/Users/[a-z]+"  # Personal paths
+   ```
+
+2. **Review file contents:**
+   - Configuration files (*.json, *.yaml, *.sh)
+   - Documentation (*.md)
+   - Example files
+
+3. **Check git history:**
+   - Even deleted files remain in git history!
+   - If secrets were previously committed, history must be cleaned
+   - Consider starting fresh repo if secrets were committed
+
+4. **Create templates for personal files:**
+   - Replace usernames with `YOUR_USERNAME`
+   - Replace paths with placeholders
+   - Replace API keys with `your_api_key_here`
+   - Add to `.gitignore`
+
+5. **Test with fresh clone:**
+   ```bash
+   cd /tmp
+   git clone <your-repo-url>
+   cd <repo-name>
+   # Can you use it without your personal files?
+   # Are setup instructions clear?
+   ```
+
+#### What to Do If You Accidentally Commit Secrets
+
+**If not yet pushed to GitHub:**
+```bash
+# Remove from last commit
+git reset HEAD~1
+# Add to .gitignore
+echo "secrets.json" >> .gitignore
+git add .gitignore
+git commit -m "Add gitignore"
+```
+
+**If already pushed to GitHub:**
+1. **Immediately rotate/revoke the exposed secret** (change password, regenerate API key)
+2. Remove from git history (requires force push - dangerous)
+3. Consider creating new repo if history is complex
+4. Never rely on "just deleting" - it stays in git history
+
+#### Examples from This Project
+
+**Personal files (NOT in git):**
+- `pdf_rules_filing_cabinet.json` - Contains `/Users/chadmiller/` paths
+- `run_incoming_scans.sh` - Contains personal folder locations
+
+**Template files (IN git):**
+- `pdf_rules_example.json` - Generic example with placeholders
+- `run_incoming_scans_template.sh` - Generic with `YOUR_USERNAME`
+
+**How users set up:**
+```bash
+cp run_incoming_scans_template.sh run_incoming_scans.sh
+cp pdf_rules_example.json pdf_rules_filing_cabinet.json
+# Edit both files with personal paths
+# These files are gitignored and stay local
+```
+
+#### Key Principles
+
+1. **Default to privacy** - When in doubt, don't commit it
+2. **Templates over examples** - Provide templates users can customize
+3. **Educate users** - Document why files are gitignored
+4. **Test assumptions** - Clone and verify nothing personal is exposed
+5. **Plan for public** - Write code as if it will be public someday
+
 ### When to Proactively Provide
 Without being asked, always provide:
 - **Security analysis** for any code that handles files, runs commands, or processes user input
