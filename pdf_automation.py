@@ -230,13 +230,49 @@ class PDFAutomation:
                 # Use the first match found
                 match = matches[0]
 
-                # Extract year (it's always 4 digits)
-                year_match = re.search(r'\b(20\d{2})\b', str(match))
-                if year_match:
-                    found_year = int(year_match.group(1))
-                    # Create a standardized date string
-                    found_date = year_match.group(1)
-                    break
+                # Parse the match based on the pattern
+                try:
+                    if len(match) == 3:
+                        # Could be YYYY-MM-DD, MM-DD-YYYY, or Month DD, YYYY
+                        if isinstance(match[0], str) and not match[0].isdigit():
+                            # Month name format: January 23, 2026
+                            month_str = match[0]
+                            day = int(match[1])
+                            year = int(match[2])
+
+                            # Convert month name to number
+                            month_map = {
+                                'jan': 1, 'feb': 2, 'mar': 3, 'apr': 4, 'may': 5, 'jun': 6,
+                                'jul': 7, 'aug': 8, 'sep': 9, 'oct': 10, 'nov': 11, 'dec': 12
+                            }
+                            month = month_map.get(month_str[:3].lower(), 1)
+
+                            found_year = year
+                            found_date = f"{year:04d}-{month:02d}-{day:02d}"
+                            break
+                        elif len(match[0]) == 4:
+                            # YYYY-MM-DD format
+                            year = int(match[0])
+                            month = int(match[1])
+                            day = int(match[2])
+                            found_year = year
+                            found_date = f"{year:04d}-{month:02d}-{day:02d}"
+                            break
+                        else:
+                            # MM-DD-YYYY format
+                            month = int(match[0])
+                            day = int(match[1])
+                            year = int(match[2])
+                            found_year = year
+                            found_date = f"{year:04d}-{month:02d}-{day:02d}"
+                            break
+                except (ValueError, IndexError):
+                    # If parsing fails, try to extract just the year
+                    year_match = re.search(r'\b(20\d{2})\b', str(match))
+                    if year_match:
+                        found_year = int(year_match.group(1))
+                        found_date = year_match.group(1)
+                        break
 
         # If no specific date found, try to find any year
         if not found_year:
@@ -615,9 +651,10 @@ Examples:
         folder = args.folder
     else:
         # Interactive mode
-        folder = input("Enter folder path to process (or press Enter for current directory): ").strip()
+        default_folder = "/Users/chadmiller/Library/Mobile Documents/com~apple~CloudDocs/Incoming Scans"
+        folder = input(f"Enter folder path to process (or press Enter for '{default_folder}'): ").strip()
         if not folder:
-            folder = "."
+            folder = default_folder
 
         # Ask if this is a dry run (only in interactive mode)
         if not args.dry_run:
