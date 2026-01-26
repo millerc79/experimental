@@ -1,23 +1,87 @@
-# Python Automation Projects
+# Experimental - Learning & Automation Projects
 
-Welcome! This repository contains automation tools to help you organize files and learn Python. 🎉
+Welcome! This is a beginner-friendly repository for exploring programming, building automation tools, and learning by doing.
 
-## Projects
+## Main Project: PDF Automation Tool
 
-### 1. File Organizer (`file_organizer.py`)
-A simple script that organizes messy folders by sorting files into categories.
+A smart, local alternative to Hazel for automating PDF organization. Automatically processes, renames, and organizes PDF files by reading their content.
 
-### 2. PDF Automation Tool (`pdf_automation.py`) - NEW!
-A smart alternative to Hazel that automatically processes, renames, and organizes PDF files by reading their content. **No need to update rules every year!**
+### Key Features
 
-📖 See [PDF_AUTOMATION_README.md](PDF_AUTOMATION_README.md) for full documentation.
+- 🔍 **Smart Year Detection** - Automatically extracts years from PDF content (no yearly rule updates!)
+- 📅 **Date Extraction** - Pulls dates from PDFs for intelligent renaming
+- 📁 **Auto-Organization** - Moves files to year-based folders in your Filing Cabinet
+- 🔒 **100% Local** - Runs entirely on your Mac, no cloud services
+- 🧪 **Dry-Run Mode** - Preview changes before applying them
+- ✅ **Secure** - Comprehensive security analysis and safe file operations
+
+### Quick Start
+
+See [MAC_SETUP.md](MAC_SETUP.md) for detailed setup instructions.
+
+```bash
+# Install dependency
+pip3 install PyPDF2
+
+# Test with dry-run (safe, no files moved)
+./run_incoming_scans.sh dry-run
+
+# Process files once
+./run_incoming_scans.sh once
+
+# Watch continuously
+./run_incoming_scans.sh watch
+```
+
+### How It Works
+
+**Your Setup:**
+- **Source:** `~/Library/Mobile Documents/com~apple~CloudDocs/Incoming Scans`
+- **Destination:** `~/Documents/Filing Cabinet/{year}/{category}/`
+
+**Example:**
+1. You scan an App Store receipt dated "January 15, 2025"
+2. Scanner saves it as `IMG_1234.pdf` to Incoming Scans
+3. Tool reads the PDF, finds "receipt" and "iCloud" keywords
+4. Tool extracts date: "January 15, 2025" from PDF content
+5. Tool renames to: `App Store_2025-01-15_2025.pdf`
+6. Tool moves to: `Filing Cabinet/2025/Receipts/`
+
+**And it works for 2026, 2027, 2028... automatically!** No need to update rules every year like Hazel.
+
+### Documentation
+
+- 📖 [MAC_SETUP.md](MAC_SETUP.md) - Complete setup guide for Mac
+- 📁 [FILING_CABINET_STRUCTURE.md](FILING_CABINET_STRUCTURE.md) - How files are organized
+- 🔒 [SECURITY_ANALYSIS.md](SECURITY_ANALYSIS.md) - Security audit and best practices
+- ✅ [CODE_VALIDATION_CHECKLIST.md](CODE_VALIDATION_CHECKLIST.md) - Essential checks for any code
+- 🔧 [PERMISSIONS_GUIDE.md](PERMISSIONS_GUIDE.md) - How file permissions work
+- 📝 [FILENAME_HANDLING.md](FILENAME_HANDLING.md) - Filename sanitization details
+- 🤖 [CLAUDE_CODE_AUTOMATION.md](CLAUDE_CODE_AUTOMATION.md) - Using with Claude Code
+
+### Pre-Configured Rules
+
+Default rules for common document types:
+- App Store receipts → `{year}/Receipts/`
+- Bank statements → `{year}/Banking/Statements/`
+- Credit card statements → `{year}/Banking/Credit Cards/`
+- Invoices → `{year}/Invoices/`
+- Tax documents → `{year}/Taxes/`
+- Utility bills → `{year}/Bills/Utilities/`
+- Medical documents → `{year}/Medical/`
+- Insurance documents → `{year}/Insurance/`
+
+Customize by editing `pdf_rules_filing_cabinet.json`
 
 ---
 
-## File Organizer
+## Other Projects
 
-The `file_organizer.py` script automatically organizes messy folders by sorting files into categories:
+### File Organizer (`file_organizer.py`)
 
+A simple beginner script that organizes messy folders by sorting files into categories.
+
+**Features:**
 - **Images** → .jpg, .png, .gif, etc.
 - **Documents** → .pdf, .docx, .txt, etc.
 - **Videos** → .mp4, .avi, .mov, etc.
@@ -26,90 +90,59 @@ The `file_organizer.py` script automatically organizes messy folders by sorting 
 - **Code** → .py, .js, .html, etc.
 - **Other** → anything that doesn't fit above
 
-## How to Run It
-
-### Step 1: Make sure Python is installed
-Open a terminal and type:
-```bash
-python --version
-```
-or
-```bash
-python3 --version
-```
-
-You should see something like "Python 3.x.x"
-
-### Step 2: Run the script
-In your terminal, navigate to this folder and run:
-```bash
-python file_organizer.py
-```
-or
+**Run it:**
 ```bash
 python3 file_organizer.py
 ```
 
-### Step 3: Tell it which folder to organize
-The script will ask you which folder to organize. You can:
-- Type a folder path (like `/home/user/Downloads`)
-- Just press Enter to organize the `test_folder` (which we created for practice)
-
-## Try It Out Safely
-
-I've created a `test_folder` with some sample files you can use to test the script without risking your real files.
-
-## What You're Learning
-
-This script teaches you:
-1. **Functions** - Reusable blocks of code (`def organize_files()`)
-2. **Loops** - Doing the same thing multiple times (`for filename in...`)
-3. **Conditionals** - Making decisions (`if file_extension in extensions`)
-4. **File operations** - Working with files and folders
-5. **Dictionaries** - Organizing data with key-value pairs
-
-## Customize It!
-
-Want to make it your own? Try:
-- Adding new file categories (edit the `file_categories` dictionary)
-- Changing where files go
-- Adding more features (like organizing by date)
-
-## Next Steps
-
-Once you're comfortable with this script, you can:
-- Organize your real Downloads folder
-- Modify it to do more complex automation
-- Use it as a template for other automation tasks
+Great for learning Python basics: functions, loops, conditionals, file operations, and dictionaries.
 
 ---
 
-## PDF Automation Tool (Advanced)
+## Repository Structure
 
-A more sophisticated automation tool that:
-- Reads PDF content to find keywords
-- Automatically extracts dates and years from PDFs
-- Renames files with smart patterns
-- Moves files to organized folders
-- Works forever without needing yearly rule updates
+```
+Experimental/
+├── README.md                          # You are here
+├── CLAUDE.MD                          # Instructions for Claude Code
+├── pdf_automation.py                  # Main PDF automation script
+├── run_incoming_scans.sh              # Easy launcher script
+├── pdf_rules_filing_cabinet.json      # Your PDF organization rules
+├── requirements.txt                   # Python dependencies
+│
+├── docs/                              # Documentation
+│   ├── MAC_SETUP.md
+│   ├── FILING_CABINET_STRUCTURE.md
+│   ├── SECURITY_ANALYSIS.md
+│   ├── PERMISSIONS_GUIDE.md
+│   ├── FILENAME_HANDLING.md
+│   ├── CODE_VALIDATION_CHECKLIST.md
+│   └── CLAUDE_CODE_AUTOMATION.md
+│
+└── file_organizer.py                  # Simple file organizer (beginner project)
+```
 
-**Key advantage**: Unlike tools like Hazel where you need separate rules for each year (2019, 2020, 2021...), this tool automatically detects years from PDF content!
+---
 
-### Quick Start
-1. Install requirements: `pip install -r requirements.txt`
-2. Run: `python3 pdf_automation.py`
-3. Try dry run mode first to preview changes
+## Getting Help
 
-### Example Use Case
-You have App Store receipts coming into your Downloads folder. The tool will:
-1. Detect they contain "receipt" and "icloud"
-2. Extract the date from the PDF (like "January 15, 2025")
-3. Rename to: `App Store_2025-01-15_2025.pdf`
-4. Move to: `Downloads/Receipts/`
+- **Setup issues?** See [MAC_SETUP.md](MAC_SETUP.md) troubleshooting section
+- **Security questions?** Read [SECURITY_ANALYSIS.md](SECURITY_ANALYSIS.md)
+- **Want to customize?** Edit `pdf_rules_filing_cabinet.json` and test with `--dry-run`
+- **Using Claude Code?** See [CLAUDE_CODE_AUTOMATION.md](CLAUDE_CODE_AUTOMATION.md)
 
-**And it works for 2026, 2027, 2028... automatically!**
+---
 
-📖 **Full documentation**: [PDF_AUTOMATION_README.md](PDF_AUTOMATION_README.md)
+## Philosophy
+
+This repository follows these principles:
+- **Learning-focused** - Code is for learning, not perfection
+- **Safety first** - Comprehensive error handling and security
+- **Local processing** - No cloud services, your data stays private
+- **Well-documented** - Extensive guides for understanding and customization
+- **Beginner-friendly** - Clear explanations and step-by-step instructions
+
+See [CLAUDE.MD](CLAUDE.MD) for the complete code quality standards applied to this project.
 
 ---
 
