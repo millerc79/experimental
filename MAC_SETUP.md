@@ -1,18 +1,20 @@
-# Mac Setup Guide - Incoming Scans Automation
+# Mac Setup Guide - PDF Automation
 
-This guide helps you set up automated PDF processing for your iCloud "Incoming Scans" folder on your Mac.
+This guide helps you set up automated PDF processing on your Mac.
 
-## Your Setup
+## Example Setup
 
 **Watched Folder (Source)**:
 ```
-/Users/chadmiller/Library/Mobile Documents/com~apple~CloudDocs/Incoming Scans
+/Users/YOUR_USERNAME/Library/Mobile Documents/com~apple~CloudDocs/Incoming Scans
 ```
 
 **Filing Cabinet (Destination)**:
 ```
-/Users/chadmiller/Documents/Filing Cabinet
+/Users/YOUR_USERNAME/Documents/Filing Cabinet
 ```
+
+Replace `YOUR_USERNAME` with your actual Mac username.
 
 This setup will:
 - Monitor your "Incoming Scans" folder for new PDFs
@@ -29,8 +31,8 @@ This setup will:
 
 ```bash
 cd ~/Documents  # or wherever you want to keep it
-git clone https://github.com/millerc79/Experimental.git
-cd Experimental
+git clone https://github.com/YOUR_USERNAME/pdf-automation-tool.git
+cd pdf-automation-tool
 ```
 
 ### 2. Install PyPDF2
@@ -44,7 +46,32 @@ Or use the requirements file:
 pip3 install -r requirements.txt
 ```
 
-### 3. Test with Dry Run (Safe!)
+### 3. Set up your personal configuration
+
+Copy the template files and customize them with your paths:
+
+```bash
+# Copy the launcher script template
+cp run_incoming_scans_template.sh run_incoming_scans.sh
+
+# Copy the rules template
+cp pdf_rules_example.json pdf_rules_filing_cabinet.json
+
+# Make the script executable
+chmod +x run_incoming_scans.sh
+```
+
+Now edit these files to customize for your setup:
+
+**Edit `run_incoming_scans.sh`:**
+- Change `SCANS_FOLDER` to your source folder path
+- Change `FILING_CABINET` to your destination folder path
+
+**Edit `pdf_rules_filing_cabinet.json`:**
+- Update all `move_to` paths to match your Filing Cabinet location
+- Customize rules for your document types
+
+### 4. Test with Dry Run (Safe!)
 
 This shows what would happen WITHOUT actually moving files:
 
@@ -59,7 +86,7 @@ This will:
 - Show where they would be moved
 - **But NOT actually move anything**
 
-### 4. Process Once
+### 5. Process Once
 
 If the dry run looks good, process the current files:
 
@@ -67,7 +94,7 @@ If the dry run looks good, process the current files:
 ./run_incoming_scans.sh once
 ```
 
-### 5. Start Watching (Continuous Monitoring)
+### 6. Start Watching (Continuous Monitoring)
 
 To continuously monitor for new PDFs:
 
@@ -107,7 +134,7 @@ Edit `pdf_rules_filing_cabinet.json` and add:
   },
   "actions": {
     "rename_pattern": "Subscription_{date}{ext}",
-    "move_to": "/Users/chadmiller/Documents/Filing Cabinet/{year}/Subscriptions"
+    "move_to": "/Users/YOUR_USERNAME/Documents/Filing Cabinet/{year}/Subscriptions"
   }
 }
 ```
@@ -142,7 +169,7 @@ nano ~/Library/LaunchAgents/com.chadmiller.pdfautomation.plist
     <string>com.chadmiller.pdfautomation</string>
     <key>ProgramArguments</key>
     <array>
-        <string>/Users/chadmiller/Documents/Experimental/run_incoming_scans.sh</string>
+        <string>/Users/YOUR_USERNAME/Documents/Experimental/run_incoming_scans.sh</string>
         <string>watch</string>
     </array>
     <key>RunAtLoad</key>
@@ -150,9 +177,9 @@ nano ~/Library/LaunchAgents/com.chadmiller.pdfautomation.plist
     <key>KeepAlive</key>
     <true/>
     <key>StandardOutPath</key>
-    <string>/Users/chadmiller/pdf_automation.log</string>
+    <string>/Users/YOUR_USERNAME/pdf_automation.log</string>
     <key>StandardErrorPath</key>
-    <string>/Users/chadmiller/pdf_automation_error.log</string>
+    <string>/Users/YOUR_USERNAME/pdf_automation_error.log</string>
 </dict>
 </plist>
 ```
@@ -203,7 +230,7 @@ tail -f ~/pdf_automation.log
 After processing, PDFs are moved from "Incoming Scans" to your "Filing Cabinet" organized by year:
 
 ```
-/Users/chadmiller/Documents/Filing Cabinet/
+/Users/YOUR_USERNAME/Documents/Filing Cabinet/
 ├── 2024/
 │   ├── Receipts/
 │   ├── Banking/

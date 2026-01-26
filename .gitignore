@@ -1,6 +1,9 @@
-# PDF Automation Tool
+# PDF Automation Tool - Personal Files
+pdf_rules_filing_cabinet.json  # Your personal rules (use pdf_rules_example.json as template)
+run_incoming_scans.sh          # Your personal script (use run_incoming_scans_template.sh)
 pdf_rules.json
 *.log
+*.pdf
 
 # Python
 __pycache__/

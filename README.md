@@ -20,16 +20,21 @@ A smart, local alternative to Hazel for automating PDF organization. Automatical
 See [MAC_SETUP.md](MAC_SETUP.md) for detailed setup instructions.
 
 ```bash
-# Install dependency
+# 1. Install dependency
 pip3 install PyPDF2
 
-# Test with dry-run (safe, no files moved)
+# 2. Set up your configuration (first time only)
+cp run_incoming_scans_template.sh run_incoming_scans.sh
+cp pdf_rules_example.json pdf_rules_filing_cabinet.json
+# Edit both files with your paths
+
+# 3. Test with dry-run (safe, no files moved)
 ./run_incoming_scans.sh dry-run
 
-# Process files once
+# 4. Process files once
 ./run_incoming_scans.sh once
 
-# Watch continuously
+# 5. Watch continuously
 ./run_incoming_scans.sh watch
 ```
 
