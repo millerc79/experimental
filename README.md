@@ -1,4 +1,6 @@
-# file-organizer
+# file-organizer-demo
+
+> **Note:** This is a demo copy of the [file-organizer](https://github.com/millerc79/file-organizer) project, hosted in the experimental repository for testing and demonstration purposes.
 
 A simple Python utility for automatically organizing files into categorized folders based on file type/extension.
 
