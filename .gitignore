@@ -3,6 +3,11 @@
 .env
 .env.local
 
+# Legacy personal files (from when projects were in this repo)
+pdf_rules.json
+pdf_rules_filing_cabinet.json
+run_incoming_scans.sh
+
 # OS files
 .DS_Store
 Thumbs.db
