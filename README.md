@@ -39,6 +39,7 @@ This repo serves as:
 - **Learning workspace** - Experimenting with code and trying new ideas
 - **Project incubator** - Prototyping before projects get their own repos
 - **Portfolio hub** - Links to completed projects
+- **AI-assisted development** - Experimenting with AI coding assistants as learning tools
 
 ### Philosophy
 
@@ -46,6 +47,17 @@ This repo serves as:
 - **Start simple** - Begin with basics, add complexity gradually
 - **Ship it** - Move projects to their own repos when they're ready
 - **Privacy first** - Never commit personal info or secrets (see [CLAUDE.MD](CLAUDE.MD))
+- **Transparent development** - Many projects here involve AI-assisted coding as part of the learning process
+
+### Development Approach
+
+I'm experimenting with AI coding assistants (like Claude) as tools for learning programming. This means:
+- Code in this repo may be written with AI assistance
+- AI helps explain concepts, debug issues, and suggest implementations
+- I'm learning through this collaborative process
+- The goal is understanding, not just working code
+
+This is a learning journey, and AI assistance is one of the tools I'm using to accelerate that learning.
 
 ## 🎯 Learning Goals
 
