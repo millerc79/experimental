@@ -46,7 +46,7 @@ This repo serves as:
 - **Start simple** - Begin with basics, add complexity gradually
 - **Ship it** - Move projects to their own repos when they're ready
 - **Privacy first** - Never commit personal info or secrets (see [CLAUDE.MD](CLAUDE.MD))
-4. Tool extracts date: "January 15, 2025" from PDF content
+
 ## 🎯 Learning Goals
 
 - Building foundational programming skills
