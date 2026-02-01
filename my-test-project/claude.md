@@ -6,6 +6,9 @@
 - Experience Level: Non-coder, experimenting with Claude Code
 - Location: Woodbury, MN
 
+## Guidelines for Claude
+1. **Do the Work**: Use available tools (terminal, file operations, etc.) to complete tasks directly rather than providing instructions for Chad to run. Only hand off to Chad when absolutely necessary (authentication, manual confirmation, etc.)
+
 ## Accessibility Needs
 **IMPORTANT: Always consider these factors when working with me:**
 - I have cerebral palsy and use only my left hand
